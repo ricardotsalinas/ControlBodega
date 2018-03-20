@@ -33,7 +33,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `ControlBodega`.`Solicitante` (
   `idSolicitante` INT NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
-  `cargo` VARCHAR(45) NOT NULL,
+  `cargo` VARCHAR(45) NULL,
   PRIMARY KEY (`idSolicitante`))
 ENGINE = InnoDB;
 
@@ -44,7 +44,26 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `ControlBodega`.`Reserva` (
   `idReserva` INT NOT NULL AUTO_INCREMENT,
   `fechaReserva` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idReserva`))
+  `isPedido` TINYINT NOT NULL,
+  `idSolicitante` INT NOT NULL,
+  PRIMARY KEY (`idReserva`),
+  INDEX `fk_Reserva_Solicitante1_idx` (`idSolicitante` ASC),
+  CONSTRAINT `fk_Reserva_Solicitante1`
+    FOREIGN KEY (`idSolicitante`)
+    REFERENCES `ControlBodega`.`Solicitante` (`idSolicitante`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `ControlBodega`.`Recepcionante`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ControlBodega`.`Recepcionante` (
+  `idRecepcionante` INT NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `descripcion` VARCHAR(45) NULL,
+  PRIMARY KEY (`idRecepcionante`))
 ENGINE = InnoDB;
 
 
@@ -56,27 +75,26 @@ CREATE TABLE IF NOT EXISTS `ControlBodega`.`Pedido` (
   `fechaEntrega` DATETIME NOT NULL,
   `fechaDevolucion` VARCHAR(45) NOT NULL,
   `comentario` VARCHAR(45) NULL,
-  `isReserva` TINYINT NULL,
   `idEquipo` INT NOT NULL,
-  `idSolicitante` INT NOT NULL,
-  `idReserva` INT NOT NULL,
+  `idRecepcionante` INT NOT NULL,
+  `idReserva` INT NULL,
   PRIMARY KEY (`idPedido`),
   INDEX `fk_Pedido_Equipo_idx` (`idEquipo` ASC),
-  INDEX `fk_Pedido_Solicitante1_idx` (`idSolicitante` ASC),
   INDEX `fk_Pedido_Reserva1_idx` (`idReserva` ASC),
+  INDEX `fk_Pedido_Recepcionante1_idx` (`idRecepcionante` ASC),
   CONSTRAINT `fk_Pedido_Equipo`
     FOREIGN KEY (`idEquipo`)
     REFERENCES `ControlBodega`.`Equipo` (`idEquipo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Pedido_Solicitante1`
-    FOREIGN KEY (`idSolicitante`)
-    REFERENCES `ControlBodega`.`Solicitante` (`idSolicitante`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_Pedido_Reserva1`
     FOREIGN KEY (`idReserva`)
     REFERENCES `ControlBodega`.`Reserva` (`idReserva`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Pedido_Recepcionante1`
+    FOREIGN KEY (`idRecepcionante`)
+    REFERENCES `ControlBodega`.`Recepcionante` (`idRecepcionante`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
