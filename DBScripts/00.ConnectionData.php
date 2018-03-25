@@ -10,5 +10,5 @@
     $hostname = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "controlbodega"
+    $dbname = "controlbodega" 
 ?> 
